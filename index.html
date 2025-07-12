@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CipherSchools - Question 21</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        li {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        li:last-child {
+            border-bottom: none;
+        }
+        button {
+            padding: 8px 15px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+        .remove-specific-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        .remove-specific-btn:hover {
+            background-color: #c82333;
+        }
+        .remove-last-btn {
+            background-color: #ffc107;
+            color: #333;
+        }
+        .remove-last-btn:hover {
+            background-color: #e0a800;
+        }
+        .highlight-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        .highlight-btn:hover {
+            background-color: #0056b3;
+        }
+        .log-dom-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        .log-dom-btn:hover {
+            background-color: #218838;
+        }
+
+        /* Highlighted style for list items */
+        .highlighted {
+            background-color: #ffe0b2 !important; /* !important to override inline styles if applied */
+            border: 1px solid #ff9800;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Question 21: DOM Manipulation</h1>
+
+        <section>
+            <h2>DOM Traversal & Logging</h2>
+            <p id="paragraph1">This is the first paragraph. <span id="span1">This is a span inside it.</span></p>
+            <p id="paragraph2">This is the second paragraph.</p>
+            <button class="log-dom-btn" onclick="logDOMElements()">Log DOM Elements</button>
+            <p><small>Check your browser's console for DOM traversal logs.</small></p>
+        </section>
+
+        <section>
+            <h2>Dynamic List Management</h2>
+            <input type="text" id="newItemInput" placeholder="Add new item" style="padding: 8px; margin-bottom: 10px;">
+            <button class="highlight-btn" onclick="addNewItem()">Add Item</button>
+            <button class="remove-last-btn" onclick="removeLastItem()">Remove Last Item</button>
+            <button class="highlight-btn" onclick="highlightItems()">Highlight All Items</button>
+
+            <ul id="myList">
+                <li id="item1">Item 1 <button class="remove-specific-btn" onclick="removeItem(this)">Remove</button></li>
+                <li id="item2">Item 2 <button class="remove-specific-btn" onclick="removeItem(this)">Remove</button></li>
+                <li id="item3">Item 3 <button class="remove-specific-btn" onclick="removeItem(this)">Remove</button></li>
+            </ul>
+        </section>
+    </div>
+
+    <script>
+        // 1. Use parentNode, childNodes, or nextSibling to log different parts of the DOM.
+        function logDOMElements() {
+            const para1 = document.getElementById('paragraph1');
+            const span1 = document.getElementById('span1');
+            const para2 = document.getElementById('paragraph2');
+
+            console.log('--- DOM Traversal Logs ---');
+
+            // parentNode
+            if (span1) {
+                console.log('Parent of span1:', span1.parentNode);
+            }
+            if (para1) {
+                console.log('Parent of paragraph1:', para1.parentNode);
+            }
+
+            // childNodes
+            if (para1) {
+                console.log('Child nodes of paragraph1:', para1.childNodes);
+                // Accessing a specific child node, e.g., the span element (assuming it's the 3rd child, index 2, after text nodes)
+                console.log('Specific child node (span) of paragraph1:', para1.children[0]); // Using .children for element nodes
+            }
+
+            // nextSibling
+            if (para1) {
+                console.log('Next sibling of paragraph1:', para1.nextSibling); // Might be a text node (whitespace)
+                console.log('Next *element* sibling of paragraph1:', para1.nextElementSibling);
+            }
+            if (para2) {
+                 console.log('Next sibling of paragraph2:', para2.nextSibling);
+                 console.log('Next *element* sibling of paragraph2:', para2.nextElementSibling);
+            }
+            console.log('--- End DOM Traversal Logs ---');
+        }
+
+        // 2. Create a list (ul) and add a button that removes an item to the list when it is clicked using DOM methods.
+        // (Function `removeItem(buttonElement)` handles individual item removal)
+
+        function removeItem(buttonElement) {
+            const listItem = buttonElement.parentNode; // Get the parent <li> of the clicked button
+            const list = listItem.parentNode;          // Get the parent <ul> of the <li>
+            if (list && listItem) {
+                list.removeChild(listItem); // Remove the <li> from the <ul>
+            }
+        }
+
+        // Function to add a new item to the list
+        function addNewItem() {
+            const list = document.getElementById('myList');
+            const newItemInput = document.getElementById('newItemInput');
+            const itemText = newItemInput.value.trim();
+
+            if (itemText === "") {
+                alert("Please enter an item to add.");
+                return;
+            }
+
+            const newLi = document.createElement('li');
+            newLi.textContent = itemText + ' '; // Add a space for the button
+
+            const removeButton = document.createElement('button');
+            removeButton.className = 'remove-specific-btn';
+            removeButton.textContent = 'Remove';
+            // Use an anonymous function or bind to pass 'this' correctly for dynamic buttons
+            removeButton.onclick = function() {
+                removeItem(this);
+            };
+
+            newLi.appendChild(removeButton);
+            list.appendChild(newLi);
+
+            newItemInput.value = ''; // Clear the input field
+        }
+
+
+        // 3. Add a second button that removes the last list item.
+        function removeLastItem() {
+            const list = document.getElementById('myList');
+            if (list.lastElementChild) { // Check if there's at least one list item
+                list.removeChild(list.lastElementChild);
+            } else {
+                alert("No more items to remove!");
+            }
+        }
+
+        // 4. Highlight all items by changing their background color via JavaScript.
+        function highlightItems() {
+            const listItems = document.querySelectorAll('#myList li'); // Select all <li> within #myList
+            listItems.forEach(item => {
+                // Toggle the 'highlighted' class
+                item.classList.toggle('highlighted');
+            });
+        }
+    </script>
+</body>
+</html>
